@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "keywords": ["startup", "market-research", "voice-agent", "vapi", "tinyfish", "redis", "validation"],
+  "categories": ["agents", "market-research", "product"],
+  "author": {
+    "name": "Alejandro",
+    "github": "alejandrospot2"
+  },
+  "config": {
+    "env": [
+      {
+        "name": "TINYFISH_API_KEY",
+        "description": "TinyFish API key for live web research (Search and Fetch APIs).",
+        "required": true,
+        "secret": true
+      },
+      {
+        "name": "VAPI_API_KEY",
+        "description": "Vapi API key for voice assistant setup and calls.",
+        "required": true,
+        "secret": true
+      },
+      {
+        "name": "REDIS_URL",
+        "description": "Redis connection URL for run state, evidence, and memory.",
+        "required": true,
+        "secret": true
+      },
+      {
+        "name": "OPENAI_API_KEY",
+        "description": "OpenAI API key for LLM market atlas synthesis.",
+        "required": true,
+        "secret": true
+      },
+      {
+        "name": "APP_BASE_URL",
+        "description": "Public HTTPS base URL of the deployed app. Required for Vapi custom tool endpoint.",
+        "required": true,
+        "secret": false
+      },
+      {
+        "name": "DEMO_MODE",
+        "description": "Set to 'true' to return fixture data without live API calls. Safe for demos.",
+        "required": false,
+        "secret": false
+      }
+    ]
+  }
+}

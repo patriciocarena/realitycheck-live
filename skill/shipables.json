@@ -29,7 +29,19 @@
       {
         "name": "OPENAI_API_KEY",
         "description": "OpenAI API key for LLM market atlas synthesis.",
-        "required": true,
+        "required": false,
+        "secret": true
+      },
+      {
+        "name": "GROQ_API_KEY",
+        "description": "Optional Groq API key for OpenAI-compatible market atlas synthesis.",
+        "required": false,
+        "secret": true
+      },
+      {
+        "name": "KIMI_API_KEY",
+        "description": "Optional Kimi API key for OpenAI-compatible market atlas synthesis.",
+        "required": false,
         "secret": true
       },
       {

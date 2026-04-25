@@ -154,8 +154,10 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch {
     return NextResponse.json(
-      { error: { code: "BAD_REQUEST", message: "Invalid JSON", retryable: false } },
-      { status: 400 }
+      {
+        results: [],
+        error: { code: "BAD_REQUEST", message: "Invalid JSON", retryable: false },
+      }
     );
   }
 

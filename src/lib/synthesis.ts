@@ -5,29 +5,44 @@ import type { MarketAtlas, Run } from "./models";
 
 let openaiClient: OpenAI | null = null;
 
+type LlmProvider = "groq" | "kimi" | "openai";
+
+function getLlmProvider(): LlmProvider | null {
+  if (process.env.GROQ_API_KEY) return "groq";
+  if (process.env.KIMI_API_KEY) return "kimi";
+  if (process.env.OPENAI_API_KEY) return "openai";
+  return null;
+}
+
 function getOpenAI(): OpenAI {
   if (!openaiClient) {
-    // Support OpenAI or Kimi (OpenAI-compatible)
-    const kimiKey = process.env.KIMI_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
-    if (kimiKey) {
+    const provider = getLlmProvider();
+    if (provider === "groq") {
       openaiClient = new OpenAI({
-        apiKey: kimiKey,
+        apiKey: process.env.GROQ_API_KEY,
+        baseURL: "https://api.groq.com/openai/v1",
+      });
+    } else if (provider === "kimi") {
+      openaiClient = new OpenAI({
+        apiKey: process.env.KIMI_API_KEY,
         baseURL: "https://api.moonshot.cn/v1",
       });
     } else {
-      openaiClient = new OpenAI({ apiKey: openaiKey });
+      openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     }
   }
   return openaiClient;
 }
 
 function getLLMModel(): string {
-  return process.env.KIMI_API_KEY ? "moonshot-v1-8k" : "gpt-4o-mini";
+  const provider = getLlmProvider();
+  if (provider === "groq") return "llama-3.1-8b-instant";
+  if (provider === "kimi") return "moonshot-v1-8k";
+  return "gpt-4o-mini";
 }
 
 function hasLLMKey(): boolean {
-  return !!(process.env.OPENAI_API_KEY || process.env.KIMI_API_KEY);
+  return getLlmProvider() !== null;
 }
 
 const SYSTEM_PROMPT = `You are a brutally honest startup validation analyst.
@@ -139,7 +154,7 @@ export async function runSynthesis(runId: string): Promise<MarketAtlas | null> {
   });
 
   if (!hasLLMKey()) {
-    console.warn("[synthesis] No LLM key set — using fallback atlas");
+    console.warn("[synthesis] No LLM key set (OPENAI_API_KEY, KIMI_API_KEY, or GROQ_API_KEY) — using fallback atlas");
     const atlas = buildFallbackAtlas(run);
     await setAtlas(runId, atlas);
     await updateRunStatus(runId, "complete");

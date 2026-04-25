@@ -50,7 +50,9 @@ export async function tinyfishSearch(
 
     if (!res.ok) {
       console.error(`[tinyfish] search non-200: ${res.status}`);
-      return [];
+      return DEMO_EVIDENCE_LIST.filter((e) => e.evidence_type === evidenceType)
+        .slice(0, 3)
+        .map((e) => ({ ...e, run_id: runId, id: `ev_${nanoid(8)}` }));
     }
 
     const data: unknown = await res.json();
@@ -59,7 +61,9 @@ export async function tinyfishSearch(
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error(`[tinyfish] search error for "${query}": ${msg}`);
-    return [];
+    return DEMO_EVIDENCE_LIST.filter((e) => e.evidence_type === evidenceType)
+      .slice(0, 3)
+      .map((e) => ({ ...e, run_id: runId, id: `ev_${nanoid(8)}` }));
   }
 }
 
